@@ -13,9 +13,9 @@ class Config:
     MAIL_ADMIN = environ.get('MAIL_ADMIN')
     MAIL_USERNAME = environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = environ.get('MAIL_PASSWORD')
-    MAIL_PREFIX = '[kittygram]'
+    MAIL_PREFIX = '[Call Me Bot]'
     
-    SQLALCHEMY_DATABASE_URI = 'postgresql:///kittygram'
+    SQLALCHEMY_DATABASE_URI = 'postgresql:///callmebot'
     SQLALCHEMY_TRACK_MODIFICATION = False
 
 class TestingConfig(Config):

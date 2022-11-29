@@ -1,7 +1,7 @@
 import os
-from kittygram import app, db
+from callmebot import db
 
-DATABASE_PATH = os.path.abspath(os.getcwd() + '/kittygram/database.db')
+DATABASE_PATH = os.path.abspath(os.getcwd() + '/callmebot/database.db')
 
 if os.path.exists(DATABASE_PATH):
     os.remove(DATABASE_PATH)

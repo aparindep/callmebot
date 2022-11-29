@@ -1,3 +1,3 @@
-# Kittygram
+# Call Me Bot
 
-Instagram but only cats allowed! Made with Flask and PostgreSQL
+Set email reminders with Call Me Bot!

@@ -1,6 +1,6 @@
 import unittest
-from kittygram import create_app,db
-from kittygram.models import User
+from callmebot import create_app,db
+from callmebot.models import User
 from config import TestingConfig
 
 EMAIL = 'alejoparinelli@gmail.com'
@@ -38,5 +38,6 @@ class FlaskClientTestCase(unittest.TestCase):
         self.assertTrue('succesfully' in response.get_data(as_text=True))
 
         # logout TODO: add logout test
-
+    
+    # TODO: add "new reminder" button test
         
