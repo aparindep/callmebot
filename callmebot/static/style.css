@@ -4,3 +4,8 @@ body {
     padding: 2%;
     font-size:larger;
 }
+.card {
+    margin: 0 auto;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}

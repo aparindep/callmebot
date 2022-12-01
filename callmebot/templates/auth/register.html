@@ -3,5 +3,7 @@
 
 {% block content %}
 <h1>Register</h1>
+<p>Please register to start making reminders.</p>
 {{ render_form(form) }}
+<center>Already have an account? <a href="{{ url_for('auth.login') }}">Login</a></center>
 {% endblock %}

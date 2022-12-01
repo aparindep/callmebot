@@ -7,28 +7,13 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 
-class Post(db.Model):
+class Reminder(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    img_filename = db.Column(db.String(50))
-    text = db.Column(db.String(50))
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow) # TODO: add time from now system
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    likes = db.relationship('Like')
-
-    def to_json(self):
-        json_post = {
-            'id': self.id,
-            'img_filename': self.img_filename,
-            'text': self.text,
-            'author_id': self.author_id,
-            'html': render_template('post.html', post=self, author=User.query.filter_by(id=self.author_id).first())
-        }
-        return json_post
-
-class Like(db.Model):
-    author_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), primary_key=True)
-
+    subject = db.Column(db.String(length=50))
+    content = db.Column(db.Text())
+    date = db.Column(db.DateTime())
+    time = db.Column(db.Time())
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -42,8 +27,7 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(128))
     confirmed = db.Column(db.Boolean, default=False)
     nickname = db.Column(db.String(64), default=False)
-    posts = db.relationship("Post", backref='author')
-    likes = db.relationship("Like")
+    reminders = db.relationship("Reminder")
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)

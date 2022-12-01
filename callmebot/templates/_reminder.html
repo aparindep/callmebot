@@ -1,0 +1,10 @@
+<div class="card reminder">
+    <div class="card-header">
+        <b>{{ reminder.subject }}</b>
+    </div>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">{{ reminder.content }}</li>
+      <li class="list-group-item">{{ reminder.date.strftime("%A %d. %B %Y") }}</li>
+      <li class="list-group-item">{{ reminder.time }}</li>
+    </ul>
+  </div>

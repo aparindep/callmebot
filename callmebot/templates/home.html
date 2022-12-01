@@ -7,7 +7,10 @@
 <h1>My reminders</h1>
 <a href="/new" class="btn btn-primary btn-lg btn-block">Add a new reminder</a>
 
-<div id="posts">    
+<div id="reminders" class="justify-content-center">
+    {% for reminder in reminders %}
+        {% include '_reminder.html' %}
+    {% endfor %}
 </div>
 
 <script src="../static/jquery.min.js"></script>
