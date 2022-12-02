@@ -3,10 +3,9 @@ from pickletools import optimize
 from re import I
 from turtle import pos
 from flask import get_flashed_messages, redirect, jsonify,render_template, abort, flash
-from sqlalchemy import desc
+from sqlalchemy import update
 from werkzeug.utils import secure_filename
 from pathlib import Path
-from PIL import Image
 
 from . import main
 from callmebot.models import Reminder
@@ -25,11 +24,11 @@ class ReminderForm(FlaskForm):
     time = TimeField(label='Time', description='What time should the mail be sent?', validators=[DataRequired('A time is required.')])
     submit = SubmitField('Add')
 
+
 @main.route('/')
 def index():
     if current_user.is_authenticated:
         reminders = Reminder.query.filter_by(author_id = current_user.id).all()
-        print(reminders)
         return render_template('home.html', reminders = reminders)
     else:
         return redirect('/auth/register')
@@ -37,16 +36,52 @@ def index():
 @main.route('/new', methods = ['GET', 'POST'])
 @login_required
 def upload():
-    print(current_user.is_authenticated)
     form = ReminderForm()
     if form.validate_on_submit():
         data = form.data
-        r = Reminder(subject=data['subject'], content=data['content'], date=data['date'], time=data['time'], author_id=current_user.id)
+        r = Reminder(
+            subject=data['subject'],
+            content=data['content'],
+            date=data['date'],
+            time=data['time'],
+            author_id=current_user.id
+            )
         db.session.add(r)
         db.session.commit()
         return redirect('/')
         
     return render_template('new.html', form=form)
+
+@main.route('/edit/<reminder_id>', methods=['GET', 'POST'])
+def edit(reminder_id):
+    r = Reminder.query.filter_by(id = reminder_id).first()
+    form = ReminderForm(
+            subject = r.subject,
+            content = r.content,
+            date = r.date,
+            time = r.time
+            )
+    if form.validate_on_submit():
+        data = form.data
+        stmt = (
+            update(Reminder).
+            where(Reminder.id == r.id).
+            values(
+                subject=data['subject'],
+                content=data['content'],
+                date=data['date'],
+                time=data['time'],
+                author_id=current_user.id)
+                )
+        db.session.execute(stmt)
+        db.session.commit()
+        
+        return redirect('/')
+    return render_template('edit_reminder.html', form=form)
+
+@main.route('/delete/<reminder_id>')
+def delete(reminder_id):
+    return f'Deleting post with id {reminder_id}'
 
 # TODO: add delete reminder endpoint
 # TODO: add edit reminder endpoint

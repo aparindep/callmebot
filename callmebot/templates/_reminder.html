@@ -1,10 +1,12 @@
 <div class="card reminder">
     <div class="card-header">
-        <b>{{ reminder.subject }}</b>
+        <b>{{ reminder.subject }}</b><div class="float-right"><a href="{{ url_for('main.edit', reminder_id = reminder.id) }}" class="btn btn-primary btn-sm">Edit</a> <a href="{{ url_for('main.delete', reminder_id = reminder.id) }}" class="btn btn-danger btn-sm">Delete</a></div> 
     </div>
     <ul class="list-group list-group-flush">
       <li class="list-group-item">{{ reminder.content }}</li>
       <li class="list-group-item">{{ reminder.date.strftime("%A %d. %B %Y") }}</li>
       <li class="list-group-item">{{ reminder.time }}</li>
+      
     </ul>
+    
   </div>
