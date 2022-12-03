@@ -66,10 +66,11 @@ def confirm(token):
     current_user.confirm(token)
     if current_user.confirm(token) == True:
         flash('You have confirmed your account.')
+        return render_template('auth/confirmation.html', token=token)
     else:
-        # TODO: add resend_confirmation option when user config view is implemented
         flash('The confirmation token is invalid or has expired.')
-    return render_template('auth/confirmation.html', token=token)
+        return render_template('expired.html'), 401
+        # TODO: add resend_confirmation option when user config view is implemented
 
 @login_required
 @bp.route('/logout')

@@ -1,5 +1,6 @@
 import unittest
 from callmebot import create_app,db
+import datetime
 from callmebot.models import User
 from config import TestingConfig
 
@@ -34,10 +35,28 @@ class FlaskClientTestCase(unittest.TestCase):
         user = User.query.filter_by(email=EMAIL).first()
         token = user.generate_confirmation_token()
         response = self.client.get('/auth/confirm/' + token.decode('utf-8'))
-        print(response.get_data(as_text=True))
-        self.assertTrue('succesfully' in response.get_data(as_text=True))
+        self.assertTrue(response.status_code == 200)
 
         # logout TODO: add logout test
+        response = self.client.get('/auth/logout')
+        self.assertTrue(response.status_code == 302)
     
-    # TODO: add "new reminder" button test
+    def test_new_reminder(self):
+        # register 
+        response = self.client.post('/auth/register', data=USER)
+        self.assertTrue(response.status_code == 302)
+
+        # test new reminder view
+        response = self.client.get('/new')
+        self.assertTrue(response.status_code == 200)
         
+        # test post form
+        response = self.client.post('/new', data={
+                                'subject':  'test',
+                                'content': 'test',
+                                'date': datetime.date(2023, 1, 1)
+                            })
+        self.assertTrue(response.status_code == 302)
+        
+if __name__=='__main__':
+    unittest.main()

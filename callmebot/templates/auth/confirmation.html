@@ -1,19 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% if current_user.confirm(token) %}
 <h1>
     You have succesfully authenticated your account.
 </h1>
 <p><a href='/'>Go to home page.</a></p>
-{% else %}
-<h1>
-    There was an error.
-</h1>
-<p>This confirmation email is not valid anymore. <br>
-    Are you logged in in the correct account?<br>
-    Otherwise, the confirmation email might have expired.
 
-</p>
-{% endif %}
 {% endblock %}

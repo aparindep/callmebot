@@ -6,6 +6,7 @@ from flask import get_flashed_messages, redirect, jsonify,render_template, abort
 from sqlalchemy import update
 from werkzeug.utils import secure_filename
 from pathlib import Path
+import datetime
 
 from . import main
 from callmebot.models import Reminder
@@ -21,7 +22,7 @@ class ReminderForm(FlaskForm):
     subject = StringField(label='Subject', description='What should be the mail subject?', validators=[Optional(), Length(1,50, 'Subject must have between 5 and 50 characters.')] )
     content = TextAreaField(label='Content', description='What should be the mail content?', validators=[Optional(), Length(1,700, 'Content must have between 1 and 200 characters.')])
     date = DateField(label='Date', description='Which day should the mail be sent?', validators=[DataRequired('A day is required.')])
-    time = TimeField(label='Time', description='What time should the mail be sent?', validators=[DataRequired('A time is required.')])
+    time = TimeField(label='Time', description='What time should the mail be sent?', validators=[DataRequired('A time is required.')], default=datetime.time(0,0))
     submit = SubmitField('Add')
 
 
@@ -75,7 +76,7 @@ def edit(reminder_id):
                 )
         db.session.execute(stmt)
         db.session.commit()
-        
+
         return redirect('/')
     return render_template('edit_reminder.html', form=form)
 
@@ -84,7 +85,6 @@ def delete(reminder_id):
     return f'Deleting post with id {reminder_id}'
 
 # TODO: add delete reminder endpoint
-# TODO: add edit reminder endpoint
 
 from uuid import uuid4
 def make_unique(string):
