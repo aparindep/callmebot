@@ -82,9 +82,10 @@ def edit(reminder_id):
 
 @main.route('/delete/<reminder_id>')
 def delete(reminder_id):
-    return f'Deleting post with id {reminder_id}'
-
-# TODO: add delete reminder endpoint
+    r = Reminder.query.filter_by(id = reminder_id).first()
+    db.session.delete(r)
+    db.session.commit()
+    return redirect('/')
 
 from uuid import uuid4
 def make_unique(string):
