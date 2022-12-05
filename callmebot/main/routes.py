@@ -1,10 +1,5 @@
-from math import floor
-from pickletools import optimize
-from re import I
-from turtle import pos
-from flask import get_flashed_messages, redirect, jsonify,render_template, abort, flash
+from flask import redirect,render_template
 from sqlalchemy import update
-from werkzeug.utils import secure_filename
 from pathlib import Path
 import datetime
 
@@ -24,7 +19,6 @@ class ReminderForm(FlaskForm):
     date = DateField(label='Date', description='Which day should the mail be sent?', validators=[DataRequired('A day is required.')])
     time = TimeField(label='Time', description='What time should the mail be sent?', validators=[DataRequired('A time is required.')], default=datetime.time(0,0))
     submit = SubmitField('Add')
-
 
 @main.route('/')
 def index():
@@ -62,6 +56,7 @@ def edit(reminder_id):
             date = r.date,
             time = r.time
             )
+    form.submit = SubmitField('Edit')
     if form.validate_on_submit():
         data = form.data
         stmt = (
@@ -80,7 +75,7 @@ def edit(reminder_id):
         return redirect('/')
     return render_template('edit_reminder.html', form=form)
 
-@main.route('/delete/<reminder_id>')
+@main.route('/delete/<reminder_id>', methods=['POST'])
 def delete(reminder_id):
     r = Reminder.query.filter_by(id = reminder_id).first()
     db.session.delete(r)
