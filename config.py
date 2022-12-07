@@ -18,7 +18,14 @@ class Config:
     SQLALCHEMY_DATABASE_URI = 'postgresql:///callmebot'
     SQLALCHEMY_TRACK_MODIFICATION = False
 
+    CELERY_BROKER_URL = 'redis://localhost:6379'
+
 class TestingConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'postgresql:///'
     TESTING = True
     WTF_CSRF_ENABLED = False
+
+config = {
+    'default': Config,
+    'testing': TestingConfig
+}

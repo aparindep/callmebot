@@ -1,8 +1,8 @@
 import unittest
-from callmebot import create_app,db
+from app import create_app,db
 import datetime
-from callmebot.models import User
-from config import TestingConfig
+from app.models import User, Reminder
+from .config import TestingConfig
 
 EMAIL = 'alejoparinelli@gmail.com'
 USER = {
@@ -50,13 +50,35 @@ class FlaskClientTestCase(unittest.TestCase):
         response = self.client.get('/new')
         self.assertTrue(response.status_code == 200)
         
-        # test post form
+        # test new reminder post
         response = self.client.post('/new', data={
                                 'subject':  'test',
                                 'content': 'test',
                                 'date': datetime.date(2023, 1, 1)
                             })
         self.assertTrue(response.status_code == 302)
+
+    def test_delete_reminder(self):
+        # register 
+        response = self.client.post('/auth/register', data=USER)
+        self.assertTrue(response.status_code == 302)
+
+        # new reminder
+        u = User.query.filter_by(email = USER['email']).first()
+        r = Reminder(
+            subject='subject',
+            content='content',
+            date=datetime.datetime(2022, 12, 12),
+            time= datetime.time(0,0),
+            author_id=u.id
+        )
+        db.session.add(r)
+        db.session.commit()
+
+        # delete
+        response = self.client.post(f'/delete/{r.id}')
+        self.assertTrue(response.status_code == 302)
+
         
 if __name__=='__main__':
     unittest.main()

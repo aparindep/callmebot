@@ -1,7 +1,7 @@
 from flask import render_template, current_app
 from datetime import  datetime
 from flask_login import UserMixin
-from callmebot import db
+from . import db
 from . import login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer

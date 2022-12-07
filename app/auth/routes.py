@@ -1,9 +1,9 @@
 from flask import redirect,render_template, flash
 
-from callmebot.auth import bp
-from callmebot.models import User
-from callmebot import db
-from mail import send_email
+from . import bp
+from ..models import User
+from .. import db
+from ..email import send_email
 from flask_login import login_user, current_user, login_required, logout_user
 
 

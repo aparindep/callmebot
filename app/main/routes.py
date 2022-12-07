@@ -1,17 +1,17 @@
-from flask import redirect,render_template
-from sqlalchemy import update
-from pathlib import Path
 import datetime
 
-from . import main
-from callmebot.models import Reminder
-from callmebot import db
-
+from flask import redirect,render_template
+from sqlalchemy import update
 from flask_login import login_required, current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TextAreaField, DateField, TimeField
 from wtforms.validators import DataRequired, Length, Optional
 
+from . import main
+from .. import db
+from ..models import Reminder
+
+from ..email import send_email
 
 class ReminderForm(FlaskForm):
     subject = StringField(label='Subject', description='What should be the mail subject?', validators=[Optional(), Length(1,50, 'Subject must have between 5 and 50 characters.')] )
@@ -43,6 +43,9 @@ def upload():
             )
         db.session.add(r)
         db.session.commit()
+        
+        send_email.delay(current_user.email, r.subject, r.content)
+
         return redirect('/')
         
     return render_template('new.html', form=form)
@@ -82,7 +85,5 @@ def delete(reminder_id):
     db.session.commit()
     return redirect('/')
 
-from uuid import uuid4
-def make_unique(string):
-    ident = uuid4().__str__()
-    return f'{ident}{Path(string).suffix}'
+def print_hello():
+    print('Hello')
