@@ -6,23 +6,24 @@ from flask import redirect,render_template
 from sqlalchemy import update
 from flask_login import login_required, current_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, TextAreaField, DateField, TimeField, SelectMultipleField
+from wtforms import StringField, SubmitField, TextAreaField, DateField, TimeField, SelectMultipleField, SelectField
 from wtforms.validators import DataRequired, Length, Optional
-from redbeat import RedBeatSchedulerEntry
-from celery import schedules
 
 from . import main
 from .. import db
 from ..models import Reminder
 
-from ..email import send_email
-
 class ReminderForm(FlaskForm):
     subject = StringField(label='Subject', description='What should be the mail subject?', validators=[Optional(), Length(1,50, 'Subject must have between 5 and 50 characters.')] )
     content = TextAreaField(label='Content', description='What should be the mail content?', validators=[Optional(), Length(1,700, 'Content must have between 1 and 200 characters.')])
+<<<<<<< Updated upstream
     date = DateField(label='Date', description='Which day should the mail be sent?', validators=[DataRequired('A day is required.')])
     days = SelectMultipleField(label='In which days should I remind you?', validators=[DataRequired()])
     time = TimeField(label='Time', description='What time should the mail be sent?', validators=[DataRequired('A time is required.')], default=datetime.time(0,0))
+=======
+    time = TimeField(label='Time', description='What time should I email you?', validators=[DataRequired('A time is required.')], default=datetime.time(0,0))
+    date = DateField(label='Date', description='When should I email you?', validators=[Optional()], default = None)
+    days = SelectMultipleField(label='Days', description='Which days of the week should I email you?', validators=[Optional()], choices = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], default = None)
     submit = SubmitField('Add')
 
 @main.route('/')
@@ -48,20 +49,12 @@ def upload():
             )
         db.session.add(r)
         db.session.commit()
+        
+        # TODO: if deadline, send_email.apply_async
 
+        
 
-        interval = schedules.crontab(
-            minute = data['time'].minute,
-            hour = data['time'].hour,
-            day_of_week = list_to_string(),
-            )
-        entry = RedBeatSchedulerEntry(
-            name = str(r.id),
-            task = 'app.email.send_email',
-            schedule = interval,
-            nowfun = partial(datetime.now, tz=pytz.timezone('America/Argentina/Buenos_Aires'))
-        )
-        entry.save()
+        days_str = list_to_string(data['days'])
 
         return redirect('/')
         
@@ -102,8 +95,33 @@ def delete(reminder_id):
     db.session.commit()
     return redirect('/')
 
+<<<<<<< Updated upstream
 def list_to_string(li):
     str = li[0].lower()
     for i in range(1, len(li)):
         str += f",{str[i]}"
+    return str
+=======
+    # TODO: delete RedbeatSchedulerEntry by key
+
+def list_to_string(li: list) -> str:
+    """
+    Converts a list of strings to a single string with commas inbetween values.
+    Also converts each string from the list to lowercase.
+    """ 
+    str = li[0].lower()
+    for i in range(1, len(li)):
+        str += f',{li[i].lower()}'
+    return str
+>>>>>>> Stashed changes
+
+
+def list_to_string(li: list) -> str:
+    """
+    Converts a list of strings to a single string with commas inbetween values.
+    Also converts each string from the list to lowercase.
+    """ 
+    str = li[0].lower()
+    for i in range(1, len(li)):
+        str += f',{li[i].lower()}'
     return str
