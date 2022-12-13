@@ -7,6 +7,8 @@ from flask_bootstrap import Bootstrap4
 from flask_mail import Mail
 from config import config
 from celery import Celery
+from redbeat import schedulers
+from custom_enc_dec import CustomJSONDecoder, CustomJSONEncoder
 
 celery = Celery(__name__, broker = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379'))
 mail = Mail()
@@ -19,7 +21,10 @@ def create_app(config_name='default'):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
     celery.conf.update(app.config)
-    
+    celery.conf.update(redbeat_redis_url = "redis://localhost:6379/1")
+    schedulers.RedBeatJSONDecoder = CustomJSONDecoder
+    schedulers.RedBeatJSONEncoder = CustomJSONEncoder
+
     from . import models
 
     mail.init_app(app)

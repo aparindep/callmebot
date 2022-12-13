@@ -1,11 +1,15 @@
 import datetime
+import pytz
+from functools import partial
 
 from flask import redirect,render_template
 from sqlalchemy import update
 from flask_login import login_required, current_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, TextAreaField, DateField, TimeField
+from wtforms import StringField, SubmitField, TextAreaField, DateField, TimeField, SelectMultipleField
 from wtforms.validators import DataRequired, Length, Optional
+from redbeat import RedBeatSchedulerEntry
+from celery import schedules
 
 from . import main
 from .. import db
@@ -17,6 +21,7 @@ class ReminderForm(FlaskForm):
     subject = StringField(label='Subject', description='What should be the mail subject?', validators=[Optional(), Length(1,50, 'Subject must have between 5 and 50 characters.')] )
     content = TextAreaField(label='Content', description='What should be the mail content?', validators=[Optional(), Length(1,700, 'Content must have between 1 and 200 characters.')])
     date = DateField(label='Date', description='Which day should the mail be sent?', validators=[DataRequired('A day is required.')])
+    days = SelectMultipleField(label='In which days should I remind you?', validators=[DataRequired()])
     time = TimeField(label='Time', description='What time should the mail be sent?', validators=[DataRequired('A time is required.')], default=datetime.time(0,0))
     submit = SubmitField('Add')
 
@@ -43,8 +48,20 @@ def upload():
             )
         db.session.add(r)
         db.session.commit()
-        
-        send_email.delay(current_user.email, r.subject, r.content)
+
+
+        interval = schedules.crontab(
+            minute = data['time'].minute,
+            hour = data['time'].hour,
+            day_of_week = list_to_string(),
+            )
+        entry = RedBeatSchedulerEntry(
+            name = str(r.id),
+            task = 'app.email.send_email',
+            schedule = interval,
+            nowfun = partial(datetime.now, tz=pytz.timezone('America/Argentina/Buenos_Aires'))
+        )
+        entry.save()
 
         return redirect('/')
         
@@ -85,5 +102,8 @@ def delete(reminder_id):
     db.session.commit()
     return redirect('/')
 
-def print_hello():
-    print('Hello')
+def list_to_string(li):
+    str = li[0].lower()
+    for i in range(1, len(li)):
+        str += f",{str[i]}"
+    return str
