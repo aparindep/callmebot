@@ -1,7 +1,21 @@
 {% extends 'base.html' %}
-{% from 'bootstrap4/form.html' import render_form %}
+{% from 'bootstrap4/form.html' import render_field %}
 
 {% block content %}
 <h1>Add a new reminder</h1>
-    {{ render_form(form)}}
+    <form method="post">
+        {{ form.csrf_token() }}
+        {{ render_field(form.subject) }}
+        {{ render_field(form.content) }}
+        
+        {% if reminder_type == 'deadline' %}
+        {{ render_field(form.date) }}
+        {% endif %}
+        {% if reminder_type == 'periodic' %}
+        {{ render_field(form.days) }}
+        {% endif %}
+
+        {{ render_field(form.time) }}
+        {{ render_field(form.submit) }}
+    </form>
 {% endblock %}

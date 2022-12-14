@@ -2,19 +2,15 @@
 {% block content %}
 <title>Call Me Bot</title>
 
-<<<<<<< Updated upstream
-<!-- TODO: add landpage with login required -->
-=======
-<form action="/test" method="post">
-    <input type="text" name="input">
-    <input type="date" name="date">
-    <input type="submit" name="submit" value="Submit">
-</form>
-
->>>>>>> Stashed changes
-
 <h1>My reminders</h1>
-<a href="/new" class="btn btn-primary btn-lg btn-block">Add a new reminder</a>
+<div class="row">
+    <div class="col-sm">
+        <a href="{{ url_for('main.new', reminder_type = 'deadline' )}}" class="btn btn-warning btn-lg btn-block">Add a deadline reminder</a>
+    </div>
+    <div class="col-sm">
+        <a href="{{ url_for('main.new', reminder_type = 'periodic' )}}" class="btn btn-primary btn-lg btn-block">Add a periodic reminder</a>
+    </div>
+</div>
 
 <div id="reminders" class="justify-content-center">
     {% for reminder in reminders %}

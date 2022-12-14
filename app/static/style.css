@@ -1,10 +1,11 @@
 body {
-    background-color: rgb(255, 251, 223);}
+    background-color: #cef0f1;}
 .main {
     padding: 2%;
     font-size:larger;
 }
 .card {
+    background-color: #74aaab;
     margin: 0 auto;
     margin-top: 2%;
     margin-bottom: 2%;

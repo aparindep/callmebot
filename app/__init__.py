@@ -6,8 +6,6 @@ from flask_login import LoginManager
 from flask_bootstrap import Bootstrap4
 from flask_mail import Mail
 from config import config
-import celeryconfig
-import celeryconfig
 from celery import Celery
 from redbeat import schedulers
 from custom_enc_dec import CustomJSONDecoder, CustomJSONEncoder
@@ -23,12 +21,9 @@ def create_app(config_name='default'):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
     celery.conf.update(app.config)
-<<<<<<< Updated upstream
     celery.conf.update(redbeat_redis_url = "redis://localhost:6379/1")
     schedulers.RedBeatJSONDecoder = CustomJSONDecoder
     schedulers.RedBeatJSONEncoder = CustomJSONEncoder
-=======
->>>>>>> Stashed changes
 
     from . import models
 

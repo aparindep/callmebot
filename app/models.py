@@ -12,6 +12,7 @@ class Reminder(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     subject = db.Column(db.String(length=50))
     content = db.Column(db.Text())
+    days = db.Column(db.ARRAY(db.String))
     date = db.Column(db.DateTime())
     time = db.Column(db.Time())
 

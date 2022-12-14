@@ -10,7 +10,19 @@
     </div>
     <ul class="list-group list-group-flush">
       <li class="list-group-item">{{ reminder.content }}</li>
+      
+      {% if reminder.date %}
       <li class="list-group-item">{{ reminder.date.strftime("%A %d. %B %Y") }}</li>
+      {% endif %}
+
+      {% if reminder.days %}
+      <li class="list-group-item">
+        {% for day in reminder.days %}
+        <a href="#" class ="badge badge-warning day-badge">{{ day }}</a>
+        {% endfor %}
+      </li>
+      {% endif %}
+      
       <li class="list-group-item">{{ reminder.time }}</li>
       
     </ul>

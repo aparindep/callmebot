@@ -18,14 +18,8 @@ class Config:
     SQLALCHEMY_DATABASE_URI = 'postgresql:///callmebot'
     SQLALCHEMY_TRACK_MODIFICATION = False
 
-<<<<<<< Updated upstream
-    CELERY_BROKER_URL = 'redis://localhost:6379'
-=======
     CELERY_BROKER_URL = 'redis://localhost:6379/0'
-    REDBEAT_REDIS_URL = 'redis://localhost:6379/1'
     CELERY_ENABLE_UTC = False
-    CELERY_ENABLE_UTC = False
->>>>>>> Stashed changes
 
 class TestingConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'postgresql:///'
