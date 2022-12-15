@@ -10,7 +10,6 @@ from redbeat.decoder import RedBeatJSONDecoder, RedBeatJSONEncoder
 
 class CustomJSONDecoder(RedBeatJSONDecoder):
     def dict_to_object(self, d):
-        print('hi, im in customjsondecoder')
         if '__type__' not in d:
             return d
         
@@ -27,7 +26,6 @@ class CustomJSONDecoder(RedBeatJSONDecoder):
 
 class CustomJSONEncoder(RedBeatJSONEncoder):
     def default(self, obj):
-        print('hi, im in customjsonencoder')
         if isinstance(obj, crontab):
             d = super().default(obj)
             if 'nowfun' not in d and isinstance(obj.nowfun, partial) and obj.nowfun.func == datetime.now:

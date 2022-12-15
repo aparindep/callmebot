@@ -19,6 +19,7 @@ class ReminderForm(FlaskForm):
     subject = StringField(label='Subject', description='What should be the mail subject?', validators=[Optional(), Length(1,50, 'Subject must have between 5 and 50 characters.')] )
     content = TextAreaField(label='Content', description='What should be the mail content?', validators=[Optional(), Length(1,700, 'Content must have between 1 and 200 characters.')])
     days = SelectMultipleField(label='Days', description='What days of the week should I email you?', validators=[Optional()], choices = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], default = None)
+    # TODO: only allow dates past today
     date = DateField(label='Date', description='When should I email you?', validators=[Optional()], default = None)
     time = TimeField(label='Time', description='What time should I email you?', validators=[DataRequired('A time is required.')], default=datetime.time(0,0))
     submit = SubmitField('Submit')
@@ -66,9 +67,13 @@ def new(reminder_type):
                 args = (r.id, current_user.email, r.subject, r.content),
                 app = celery
             )
+            print(entry.key)
             entry.save()
+        
+        print(r.id)
         # TODO: save entry key as database column
-
+        
+        # TODO: implement deadline reminders
         return redirect('/')
         
     return render_template('new.html', form=form, reminder_type=reminder_type)
@@ -107,6 +112,9 @@ def delete(reminder_id):
     r = Reminder.query.filter_by(id = reminder_id).first()
     db.session.delete(r)
     db.session.commit()
+    
+    e = RedBeatSchedulerEntry.from_key(f'redbeat{r.id}')
+    e.delete()
     return redirect('/')
 
 
