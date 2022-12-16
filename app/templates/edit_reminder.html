@@ -3,7 +3,7 @@
 
 {% block content %}
 <h1>Edit reminder</h1>
-    <form method="post">
+    <form method="post" autocomplete="off">
         {{ form.csrf_token() }}
         {{ render_field(form.subject) }}
         {{ render_field(form.content) }}

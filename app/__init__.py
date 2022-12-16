@@ -21,7 +21,10 @@ def create_app(config_name='default'):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
     celery.conf.update(app.config)
-    celery.conf.update(redbeat_redis_url = "redis://localhost:6379/1")
+    celery.conf.update(
+        imports = ('app.email', ),
+        redbeat_redis_url = "redis://localhost:6379/1"
+        )
     schedulers.RedBeatJSONDecoder = CustomJSONDecoder
     schedulers.RedBeatJSONEncoder = CustomJSONEncoder
 

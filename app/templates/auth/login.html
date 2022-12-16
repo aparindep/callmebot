@@ -3,5 +3,5 @@
 
 {% block content %}
 <h1>Login</h1>
-{{ render_form(form) }}
+{{ render_form(form, render_kw = {'autocomplete': 'off'}) }}
 {% endblock %}

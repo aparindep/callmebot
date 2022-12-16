@@ -1,15 +1,16 @@
+import pytz
 from flask import redirect,render_template, flash
+from flask_login import login_user, current_user, login_required, logout_user
+from flask_wtf import FlaskForm
+from wtforms.validators import DataRequired, Email, Length, Regexp, EqualTo
+from wtforms import StringField, PasswordField, SubmitField, ValidationError, SelectField
 
 from . import bp
 from ..models import User
 from .. import db
 from ..email import send_email
-from flask_login import login_user, current_user, login_required, logout_user
 
-
-from flask_wtf import FlaskForm
-from wtforms.validators import DataRequired, Email, Length, Regexp, EqualTo
-from wtforms import StringField, PasswordField, SubmitField, ValidationError
+tzs = [tz for tz in pytz.common_timezones if len(tz) != 3] # remove GMT and UTC 
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators = [DataRequired(),  Length(1,64), Email()])
@@ -22,6 +23,7 @@ class RegistrationForm(FlaskForm):
                                         Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0, 'Usernames must have only letters, ' 'numbers, dots or underscores')])
     password = PasswordField('Password', validators=[DataRequired(), EqualTo('password2', message='Passwords must match.')])
     password2 = PasswordField('Confirm password', validators=[DataRequired()])
+    timezone = SelectField('Timezone', choices = tzs, validators = [DataRequired()])
     submit = SubmitField('Register')
 
     def validate_email(self, field):
@@ -48,14 +50,14 @@ def login():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(email=form.email.data, username=form.username.data)
+        user = User(email=form.email.data, username=form.username.data, timezone = form.timezone.data)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
         login_user(user)
         token = user.generate_confirmation_token()
         
-        send_email(to=user.email, subject=' New user confirmation', html_body=render_template('email/confirmation.html', name=user.username, token=token))
+        send_email(to=user.email, subject=' New user confirmation', content=render_template('email/confirmation.html', name=user.username, token=token))
 
         return redirect('/')
     return render_template('auth/register.html', form=form)
@@ -70,7 +72,15 @@ def confirm(token):
     else:
         flash('The confirmation token is invalid or has expired.')
         return render_template('expired.html'), 401
-        # TODO: add resend_confirmation option when user config view is implemented
+
+@bp.route('/confirm')
+@login_required
+def resend_confirmation():
+    token = current_user.generate_confirmation_token()
+    send_email(to=current_user.email, subject=' New user confirmation', content=render_template('email/confirmation.html', name=current_user.username, token=token))
+    flash('Confirmation email has been sent.')
+    return redirect('/')
+
 
 @login_required
 @bp.route('/logout')

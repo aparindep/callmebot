@@ -27,7 +27,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(64), unique=True)
     password_hash = db.Column(db.String(128))
     confirmed = db.Column(db.Boolean, default=False)
-    nickname = db.Column(db.String(64), default=False)
+    timezone = db.Column(db.String(30))
     reminders = db.relationship("Reminder")
 
     def set_password(self, password):
