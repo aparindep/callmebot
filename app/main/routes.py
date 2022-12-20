@@ -59,7 +59,6 @@ def new(reminder_type):
         user_tz = pytz.timezone(current_user.timezone)
         
         if reminder_type == 'periodic':
-            print(current_user.timezone)
             interval = schedules.crontab(
                 minute = data['time'].minute,
                 hour = data['time'].hour,
