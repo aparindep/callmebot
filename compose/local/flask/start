@@ -4,7 +4,7 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-python3 -m flask db init
+python3 -m flask db stamp head
 python3 -m flask db migrate -m 'docker commit'
 python3 -m flask db upgrade
 python3 -m flask run --host=0.0.0.0

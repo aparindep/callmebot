@@ -17,7 +17,7 @@ RUN apt-get update \
 COPY ./requirements.txt /requirements.txt
 RUN pip install -r requirements.txt
 
-COPY ./compose/local/flask/start /entrypoint
+COPY ./compose/local/flask/entrypoint /entrypoint
 RUN sed -i 's/\r$//g' /entrypoint
 RUN chmod +x /entrypoint
 

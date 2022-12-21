@@ -10,7 +10,7 @@ services:
     volumes: 
       - .:/application
     ports:
-      - 5010:500
+      - "5010:5000"
     env_file:
       - .env
     environment:
@@ -67,7 +67,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/local/flask/Dockerfile
-    image: flask_celery_example_celery_flower
+    image: callmebot_celery_flower
     command: /start-flower
     volumes:
       - .:/application
@@ -76,7 +76,7 @@ services:
     environment:
       - FLASK_APP=run
     ports:
-      - 5557:5555
+      - "5557:5555"
     depends_on:
       - redis
       - db

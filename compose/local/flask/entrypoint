@@ -24,6 +24,7 @@ try:
         dbname = dbname,
         user = user,
         password = password,
+        host = host,
         port = port
     )
 except psycopg2.OperationalError:
