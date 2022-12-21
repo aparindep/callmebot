@@ -10,7 +10,7 @@ from celery import Celery
 from redbeat import schedulers
 from custom_enc_dec import CustomJSONDecoder, CustomJSONEncoder
 
-celery = Celery(__name__, broker = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379'))
+celery = Celery(__name__, broker = 'redis://localhost:6379')
 mail = Mail()
 db = SQLAlchemy()
 migrate = Migrate()
