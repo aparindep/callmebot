@@ -4,7 +4,7 @@ set -o errexit
 set -o nounset
 
 worker_ready() {
-    celery -A celery_worker inspect ping
+    celery -A celery_worker.celery inspect ping
 }
 
 until worker_ready; do
