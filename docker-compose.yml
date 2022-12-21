@@ -8,7 +8,7 @@ services:
     image: callmebot
     command: /start
     volumes: 
-      - .:/app
+      - .:/application
     ports:
       - 5010:500
     env_file:
@@ -38,7 +38,7 @@ services:
       image: callmebot_celery_worker
       command: /start-celeryworker
       volumes:
-        - .:/app
+        - .:/application
       env_file:
         - .env
       environment:
@@ -70,7 +70,7 @@ services:
     image: flask_celery_example_celery_flower
     command: /start-flower
     volumes:
-      - .:/app
+      - .:/application
     env_file:
       - .env
     environment:
