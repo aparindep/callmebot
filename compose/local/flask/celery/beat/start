@@ -3,4 +3,4 @@
 set -o errexit
 set -o nounset
 
-celery -A celery_worker.celery beat -l info
+celery -A celery_worker.celery beat -S redbeat.RedBeatSchedurer -l info
