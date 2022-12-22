@@ -4,4 +4,4 @@ set -o errexit
 set -o nounset
 
 rm -f './celerybeat-schedule'
-celery -A celery_worker.celery beat -S redbeat.RedBeatScheduler -l info
+celery -A celery_worker.celery beat -S redbeat.RedBeatScheduler --max-interval 10 -l debug 

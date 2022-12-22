@@ -27,6 +27,8 @@ services:
       - POSTGRES_DB=callmebot
       - POSTGRES_USER=callmebot
       - POSTGRES_PASSWORD=callmebot
+    ports:
+      - "5432:5432"
 
   redis:
     image: redis:6-alpine
