@@ -23,7 +23,7 @@ def create_app(config_name='default'):
     celery.conf.update(app.config)
     celery.conf.update(
         imports = ('app.email', ),
-        redbeat_redis_url = "redis://localhost:6379/1"
+        redbeat_redis_url = "redis://localhost:6379/1",
         )
     schedulers.RedBeatJSONDecoder = CustomJSONDecoder
     schedulers.RedBeatJSONEncoder = CustomJSONEncoder
