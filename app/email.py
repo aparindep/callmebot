@@ -6,7 +6,6 @@ from . import mail, celery
 def send_email(to, subject="", content="", **kwargs):
     msg = Message(
         subject = current_app.config['MAIL_PREFIX'] + ' ' + subject,
-        sender = current_app.config['MAIL_ADMIN'],
         recipients = [to]
         )   
     msg.html = content
