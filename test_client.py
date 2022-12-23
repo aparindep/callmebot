@@ -37,7 +37,6 @@ class FlaskClientTestCase(unittest.TestCase):
         response = self.client.get('/auth/confirm/' + token.decode('utf-8'))
         self.assertTrue(response.status_code == 200)
 
-        # logout TODO: add logout test
         response = self.client.get('/auth/logout')
         self.assertTrue(response.status_code == 302)
     

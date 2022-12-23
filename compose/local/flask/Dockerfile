@@ -33,10 +33,6 @@ COPY ./compose/local/flask/celery/beat/start /start-celerybeat
 RUN sed -i 's/\r$//g' /start-celerybeat
 RUN chmod +x /start-celerybeat
 
-COPY ./compose/local/flask/celery/flower/start /start-flower
-RUN sed -i 's/\r$//g' /start-flower
-RUN chmod +x /start-flower
-
 WORKDIR /application
 
 ENTRYPOINT ["/entrypoint"]

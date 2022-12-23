@@ -20,10 +20,11 @@ bootstrap = Bootstrap4()
 def create_app(config_name='default'):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
-    celery.conf.update(app.config)
     celery.conf.update(
         imports = ('app.email', ),
-        redbeat_redis_url = "redis://redis:6379/1"
+        enable_utc = False,
+        broker_url = os.environ.get('CELERY_BROKER_URL'),
+        redbeat_redis_url = os.environ.get('REDBEAT_REDIS_URL')
         )
     schedulers.RedBeatJSONDecoder = CustomJSONDecoder
     schedulers.RedBeatJSONEncoder = CustomJSONEncoder

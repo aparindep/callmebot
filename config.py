@@ -10,15 +10,16 @@ class Config:
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 587
     MAIL_USE_TLS = True
+    MAIL_DEFAULT_SENDER = environ.get('MAIL_USERNAME')
     MAIL_USERNAME = environ.get('MAIL_USERNAME')
-    MAIL_ADMIN = environ.get('MAIL_ADMIN')
     MAIL_PASSWORD = environ.get('MAIL_PASSWORD')
     MAIL_PREFIX = '[Call Me Bot]'
     
     SQLALCHEMY_DATABASE_URI = environ.get('DATABASE_URL')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    CELERY_ENABLE_UTC = False
+    CELERY_BROKER_URL = environ.get('CELERY_BROKER_URL')
+    REDBEAT_REDIS_URL = environ.get('REDBEAT_REDIS_URL')
 
 class TestingConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'postgresql:///'

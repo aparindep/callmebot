@@ -13,8 +13,6 @@ services:
       - "5010:5000"
     env_file:
       - .env
-    environment:
-      - FLASK_APP=run
     depends_on:
       - redis
       - db
@@ -43,8 +41,6 @@ services:
         - .:/application
       env_file:
         - .env
-      environment:
-        - FLASK_APP=run
       depends_on:
         - redis
         - db
@@ -59,26 +55,6 @@ services:
       - .:/application
     env_file:
       - .env
-    environment:
-      - FLASK_APP=run
-    depends_on:
-      - redis
-      - db
-  
-  flower:
-    build:
-      context: .
-      dockerfile: ./compose/local/flask/Dockerfile
-    image: callmebot_celery_flower
-    command: /start-flower
-    volumes:
-      - .:/application
-    env_file:
-      - .env
-    environment:
-      - FLASK_APP=run
-    ports:
-      - "5557:5555"
     depends_on:
       - redis
       - db
