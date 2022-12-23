@@ -1,3 +1,2 @@
-# Call Me Bot
-
-Set email reminders with Call Me Bot!
+# callmebot
+A bot that sends email reminders.
