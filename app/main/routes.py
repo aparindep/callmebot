@@ -19,7 +19,7 @@ from ..models import Reminder
 class ReminderForm(FlaskForm):
     subject = StringField(label='Subject', description='What should be the mail subject?', validators=[Optional(), Length(1,50, 'Subject must have between 5 and 50 characters.')] )
     content = TextAreaField(label='Content', description='What should be the mail content?', validators=[Optional(), Length(1,700, 'Content must have between 1 and 200 characters.')])
-    days = SelectMultipleField(label='Days', description='What days of the week should I email you?', validators=[Optional()], choices = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], render_kw = {'class': 'days-select'},  default = None),
+    days = SelectMultipleField(label='Days', description='What days of the week should I email you?', validators=[Optional()], choices = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], render_kw = {'class': 'days-select'},  default = None)
     date = DateField(label='Date', description='When should I email you?', validators=[Optional()], default = None)
     time = TimeField(label='Time', description='What time should I email you?', validators=[DataRequired('A time is required.')], default=datetime.time(0,0))
     submit = SubmitField('Submit')
@@ -81,7 +81,6 @@ def new(reminder_type):
                 eta = user_tz.localize(datetime.datetime.combine(r.date, r.time))
             )
         return redirect('/')
-        
     return render_template('new.html', form=form, reminder_type=reminder_type)
 
 @main.route('/edit/<reminder_id>', methods=['GET', 'POST'])
