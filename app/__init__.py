@@ -10,7 +10,7 @@ from celery import Celery
 from redbeat import schedulers
 from custom_enc_dec import CustomJSONDecoder, CustomJSONEncoder
 
-celery = Celery(__name__, broker = 'redis://localhost:6379/0')
+celery = Celery(__name__)
 mail = Mail()
 db = SQLAlchemy()
 migrate = Migrate()
@@ -23,7 +23,7 @@ def create_app(config_name='default'):
     celery.conf.update(app.config)
     celery.conf.update(
         imports = ('app.email', ),
-        redbeat_redis_url = "redis://localhost:6379/1",
+        redbeat_redis_url = "redis://redis:6379/1"
         )
     schedulers.RedBeatJSONDecoder = CustomJSONDecoder
     schedulers.RedBeatJSONEncoder = CustomJSONEncoder

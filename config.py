@@ -15,7 +15,7 @@ class Config:
     MAIL_PASSWORD = environ.get('MAIL_PASSWORD')
     MAIL_PREFIX = '[Call Me Bot]'
     
-    SQLALCHEMY_DATABASE_URI = 'postgresql:///callmebot'
+    SQLALCHEMY_DATABASE_URI = environ.get('DATABASE_URL')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     CELERY_ENABLE_UTC = False
