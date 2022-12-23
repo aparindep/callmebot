@@ -20,6 +20,7 @@ class Config:
 
     CELERY_BROKER_URL = environ.get('CELERY_BROKER_URL')
     REDBEAT_REDIS_URL = environ.get('REDBEAT_REDIS_URL')
+    CELERY_ENABLE_UTC = False
 
 class TestingConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'postgresql:///'
