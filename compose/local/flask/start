@@ -5,6 +5,7 @@ set -o pipefail
 set -o nounset
 
 rm -rf migrations
+python3 manager.py dropdb
 
 python3 -m flask db init
 python3 -m flask db migrate -m 'docker commit'

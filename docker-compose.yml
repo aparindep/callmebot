@@ -16,6 +16,8 @@ services:
     depends_on:
       - redis
       - db
+    networks:
+      - callmebot-network
 
   db: 
     image: postgres:13-alpine
@@ -27,9 +29,13 @@ services:
       - POSTGRES_PASSWORD=callmebot
     ports:
       - "5432:5432"
+    networks:
+      - callmebot-network
 
   redis:
     image: redis:6-alpine
+    networks:
+      - callmebot-network
 
   celery_worker:
       build:
@@ -44,6 +50,8 @@ services:
       depends_on:
         - redis
         - db
+      networks:
+      - callmebot-network
       
   celery_beat:
     build:
@@ -58,6 +66,12 @@ services:
     depends_on:
       - redis
       - db
+    networks:
+      - callmebot-network
 
 volumes:
   postgres_data:
+
+networks:
+  callmebot-network:
+    driver: bridge

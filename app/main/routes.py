@@ -30,7 +30,7 @@ def index():
         if current_user.confirmed:
             reminders = Reminder.query.filter_by(author_id = current_user.id).all()
             return render_template('home.html', reminders = reminders)
-        else: 
+        else:
             return render_template('confirm.html')
     else:
         return redirect('/auth/register')

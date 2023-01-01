@@ -1,8 +1,8 @@
 """docker commit
 
-Revision ID: 35b5ae3d8842
+Revision ID: 31043d14a5ed
 Revises: 
-Create Date: 2022-12-23 21:48:12.565689
+Create Date: 2023-01-01 23:18:48.399152
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '35b5ae3d8842'
+revision = '31043d14a5ed'
 down_revision = None
 branch_labels = None
 depends_on = None
