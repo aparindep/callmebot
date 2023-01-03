@@ -14,8 +14,8 @@ git clone git@github.com:aparinelli/callmebot.git
 ```
 FLASK_DEBUG=True
 DATABASE_URL='postgresql://callmebot:callmebot@db/callmebot'
-CELERY_BROKER_URL='redis://redis:6379/0'
-CELERY_REDBEAT_REDIS_URL='redis://redis:6379/1'
+MY_CELERY_BROKER_URL='redis://redis:6379/0'
+MY_CELERY_REDBEAT_REDIS_URL='redis://redis:6379/1'
 SECRET_KEY='yoursecretkey'
 MAIL_USERNAME= 'youremail'
 MAIL_PASSWORD= 'yourpassword'

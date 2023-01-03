@@ -1,8 +1,9 @@
 import unittest
-from app import create_app,db
+import pytz
 import datetime
+from flask import render_template
+from app import create_app,db
 from app.models import User, Reminder
-from .config import TestingConfig
 
 EMAIL = 'alejoparinelli@gmail.com'
 USER = {
@@ -10,11 +11,12 @@ USER = {
     'username': 'zephord',
     'password': 'hello',
     'password2': 'hello',
+    'timezone': pytz.timezone('America/Argentina/Buenos_Aires')
 }
 
 class FlaskClientTestCase(unittest.TestCase):
     def setUp(self):
-        self.app = create_app(TestingConfig)
+        self.app = create_app('testing')
         self.app_context = self.app.app_context()
         self.app_context.push()
         
@@ -31,7 +33,7 @@ class FlaskClientTestCase(unittest.TestCase):
         response = self.client.post('/auth/register', data=USER)
         self.assertTrue(response.status_code == 302)
 
-        # try confirmation token    
+        # confirm    
         user = User.query.filter_by(email=EMAIL).first()
         token = user.generate_confirmation_token()
         response = self.client.get('/auth/confirm/' + token.decode('utf-8'))
@@ -44,18 +46,37 @@ class FlaskClientTestCase(unittest.TestCase):
         # register 
         response = self.client.post('/auth/register', data=USER)
         self.assertTrue(response.status_code == 302)
+        
+        # confirm
+        user = User.query.filter_by(email=EMAIL).first()
+        token = user.generate_confirmation_token()
+        response = self.client.get('/auth/confirm/' + token.decode('utf-8'))
+        self.assertTrue(response.status_code == 200)
 
-        # test new reminder view
-        response = self.client.get('/new')
+        # test new deadline reminder
+        response = self.client.get('/new/deadline')
         self.assertTrue(response.status_code == 200)
         
-        # test new reminder post
-        response = self.client.post('/new', data={
+        response = self.client.post('/new/deadline', data={
                                 'subject':  'test',
                                 'content': 'test',
                                 'date': datetime.date(2023, 1, 1)
                             })
         self.assertTrue(response.status_code == 302)
+
+        # test new periodic reminder
+        response = self.client.get('/new/periodic')
+        self.assertTrue(response.status_code == 200)
+        
+        response = self.client.post('/new/periodic', data={
+                                'subject':  'test',
+                                'content': 'test',
+                                'days': ['Mon', 'Tue']
+                            })
+        self.assertTrue(response.status_code == 302)
+
+        # response = self.client.get('/')
+        # self.assertTrue(render_template('_reminder.html', user=))
 
     def test_delete_reminder(self):
         # register 

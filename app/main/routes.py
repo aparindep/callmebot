@@ -84,6 +84,7 @@ def new(reminder_type):
     return render_template('new.html', form=form, reminder_type=reminder_type)
 
 @main.route('/edit/<reminder_id>', methods=['GET', 'POST'])
+@login_required
 def edit(reminder_id):
     r = Reminder.query.filter_by(id = reminder_id).first()
     form = ReminderForm(
@@ -112,6 +113,7 @@ def edit(reminder_id):
     return render_template('edit_reminder.html', form=form)
 
 @main.route('/delete/<reminder_id>', methods=['POST'])
+@login_required
 def delete(reminder_id):
     r = Reminder.query.filter_by(id = reminder_id).first()
     
@@ -136,3 +138,5 @@ def list_to_string(li: list) -> str:
     for i in range(1, len(li)):
         str += f',{li[i].lower()}'
     return str
+
+#TODO: add auth_required decorator

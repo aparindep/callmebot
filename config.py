@@ -15,19 +15,29 @@ class Config:
     MAIL_PASSWORD = environ.get('MAIL_PASSWORD')
     MAIL_PREFIX = '[Call Me Bot]'
     
-    SQLALCHEMY_DATABASE_URI = environ.get('DATABASE_URL')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    CELERY_BROKER_URL = environ.get('CELERY_BROKER_URL')
-    REDBEAT_REDIS_URL = environ.get('REDBEAT_REDIS_URL')
+    CELERY_IMPORTS = ('app.email', )
     CELERY_ENABLE_UTC = False
 
-class TestingConfig(Config):
-    SQLALCHEMY_DATABASE_URI = 'postgresql:///'
+class ProductionConfig(Config):
+    SQLALCHEMY_DATABASE_URI = environ.get('DATABASE_URL')
+    CELERY_BROKER_URL = environ.get('MY_CELERY_BROKER_URL')
+    REDBEAT_REDIS_URL = environ.get('MY_CELERY_REDBEAT_REDIS_URL')
+    
+class DevelopmentConfig(Config):
+    DEBUG = True
+    SQLALCHEMY_DATABASE_URI = 'postgresql:///callmebot'
+    CELERY_BROKER_URL = 'redis://localhost:6379/0'
+    REDBEAT_REDIS_URL = 'redis://localhost:6379/1'
+
+class TestingConfig(DevelopmentConfig):
     TESTING = True
     WTF_CSRF_ENABLED = False
+    SQLALCHEMY_DATABASE_URI = 'postgresql:///'
 
 config = {
-    'default': Config,
+    'production': ProductionConfig,
+    'development': DevelopmentConfig,
     'testing': TestingConfig
 }

@@ -11,6 +11,8 @@ services:
       - .:/application
     ports:
       - "5010:5000"
+    environment:
+      - FLASK_APP=app:create_app('production')
     env_file:
       - .env
     depends_on:

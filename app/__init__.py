@@ -17,14 +17,15 @@ migrate = Migrate()
 login_manager = LoginManager()
 bootstrap = Bootstrap4()
 
-def create_app(config_name='default'):
+def create_app(config_name):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
     celery.conf.update(
-        imports = ('app.email', ),
-        enable_utc = False,
-        broker_url = os.environ.get('CELERY_BROKER_URL'),
-        redbeat_redis_url = os.environ.get('REDBEAT_REDIS_URL')
+        imports = app.config['CELERY_IMPORTS'],
+        enable_utc = app.config['CELERY_ENABLE_UTC'],
+        broker_url = app.config['CELERY_BROKER_URL'],
+        redbeat_redis_url = app.config['REDBEAT_REDIS_URL'],
+        redbeat_lock_timeout = 15
         )
     schedulers.RedBeatJSONDecoder = CustomJSONDecoder
     schedulers.RedBeatJSONEncoder = CustomJSONEncoder
