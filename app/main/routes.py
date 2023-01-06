@@ -1,6 +1,6 @@
 import datetime
 import pytz
-from functools import partial
+from functools import partial, wraps
 
 from flask import redirect,render_template
 from sqlalchemy import update
@@ -15,7 +15,7 @@ from . import main
 from .. import db, celery
 from app.email import send_email
 from ..models import Reminder
-
+    
 class ReminderForm(FlaskForm):
     subject = StringField(label='Subject', description='What should be the mail subject?', validators=[Optional(), Length(1,50, 'Subject must have between 5 and 50 characters.')] )
     content = TextAreaField(label='Content', description='What should be the mail content?', validators=[Optional(), Length(1,700, 'Content must have between 1 and 200 characters.')])
@@ -23,6 +23,14 @@ class ReminderForm(FlaskForm):
     date = DateField(label='Date', description='When should I email you?', validators=[Optional()], default = None)
     time = TimeField(label='Time', description='What time should I email you?', validators=[DataRequired('A time is required.')], default=datetime.time(0,0))
     submit = SubmitField('Submit')
+
+def confirm_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.confirmed:
+            return redirect('/')
+        return f(*args, **kwargs)
+    return decorated_function
 
 @main.route('/')
 def index():
@@ -37,6 +45,7 @@ def index():
 
 @main.route('/new/<reminder_type>', methods = ['GET', 'POST'])
 @login_required
+@confirm_required
 def new(reminder_type):
     form = ReminderForm()
     if form.validate_on_submit():
@@ -85,6 +94,7 @@ def new(reminder_type):
 
 @main.route('/edit/<reminder_id>', methods=['GET', 'POST'])
 @login_required
+@confirm_required
 def edit(reminder_id):
     r = Reminder.query.filter_by(id = reminder_id).first()
     form = ReminderForm(
@@ -114,6 +124,7 @@ def edit(reminder_id):
 
 @main.route('/delete/<reminder_id>', methods=['POST'])
 @login_required
+@confirm_required
 def delete(reminder_id):
     r = Reminder.query.filter_by(id = reminder_id).first()
     
@@ -128,7 +139,6 @@ def delete(reminder_id):
     
     return redirect('/')
 
-
 def list_to_string(li: list) -> str:
     """
     Converts a list of strings to a single string with commas inbetween values.
@@ -138,5 +148,4 @@ def list_to_string(li: list) -> str:
     for i in range(1, len(li)):
         str += f',{li[i].lower()}'
     return str
-
 #TODO: add auth_required decorator

@@ -7,7 +7,7 @@ from wtforms import StringField, PasswordField, SubmitField, ValidationError, Se
 
 from . import bp
 from ..models import User
-from .. import db
+from .. import db, login_manager
 from ..email import send_email
 
 tzs = [tz for tz in pytz.common_timezones if len(tz) != 3] # remove GMT and UTC 
@@ -33,6 +33,10 @@ class RegistrationForm(FlaskForm):
     def validate_user(self, field):
         if User.query.filter_by(username=field.data).first():
             raise ValidationError('Username is already registered.')
+
+@login_manager.unauthorized_handler
+def unauthorized_rollback():
+    return redirect('/auth/register')
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
