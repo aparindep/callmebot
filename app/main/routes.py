@@ -148,4 +148,3 @@ def list_to_string(li: list) -> str:
     for i in range(1, len(li)):
         str += f',{li[i].lower()}'
     return str
-#TODO: add auth_required decorator
