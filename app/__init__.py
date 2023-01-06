@@ -44,6 +44,11 @@ def create_app(config_name):
     from .main import main as main_bp
     app.register_blueprint(main_bp)
 
+    @app.cli.command("delete_versions")
+    def delete_versions():
+        db.session.execute(' DELETE FROM "alembic_version" ')
+        db.session.commit()
+    
     return app
 
 
