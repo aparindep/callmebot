@@ -1,5 +1,5 @@
 # callmebot
-A bot that sends email reminders.
+Send emails periodically with Call Me Bot!
 
 ## How to install
 
