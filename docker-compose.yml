@@ -5,39 +5,38 @@ services:
     build:
       context: .
       dockerfile: ./compose/local/flask/Dockerfile
-    image: callmebot
+    image: callmebot_web
     command: /start
     volumes: 
       - .:/application
     ports:
       - "5010:5000"
-    environment:
-      - FLASK_APP=app:create_app('production')
     env_file:
       - .env
+    environment:
+      - APP_ENV=${APP_ENV?err}
     depends_on:
       - redis
       - db
-    networks:
-      - callmebot-network
 
   db: 
-    image: postgres:13-alpine
+    build: 
+      context: ./compose/local/db
+      dockerfile: Dockerfile
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
-      - POSTGRES_DB=callmebot
       - POSTGRES_USER=callmebot
       - POSTGRES_PASSWORD=callmebot
     ports:
       - "5432:5432"
-    networks:
-      - callmebot-network
+    expose:
+      - 5432
 
   redis:
     image: redis:6-alpine
-    networks:
-      - callmebot-network
+    volumes:
+      - redis_data:/data
 
   celery_worker:
       build:
@@ -49,11 +48,11 @@ services:
         - .:/application
       env_file:
         - .env
+      environment:
+        - APP_ENV=${APP_ENV?err}
       depends_on:
         - redis
         - db
-      networks:
-      - callmebot-network
       
   celery_beat:
     build:
@@ -65,15 +64,12 @@ services:
       - .:/application
     env_file:
       - .env
+    environment:
+      - APP_ENV=${APP_ENV?err}
     depends_on:
       - redis
       - db
-    networks:
-      - callmebot-network
 
 volumes:
   postgres_data:
-
-networks:
-  callmebot-network:
-    driver: bridge
+  redis_data:

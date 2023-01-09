@@ -1,8 +1,7 @@
 import unittest
 import pytz
 import datetime
-from flask import render_template
-from app import create_app,db
+from app import create_app, db
 from app.models import User, Reminder
 
 EMAIL = 'alejoparinelli@gmail.com'
@@ -16,7 +15,7 @@ USER = {
 
 class FlaskClientTestCase(unittest.TestCase):
     def setUp(self):
-        self.app = create_app('testing')
+        self.app = create_app()
         self.app_context = self.app.app_context()
         self.app_context.push()
         

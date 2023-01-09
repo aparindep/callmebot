@@ -17,9 +17,9 @@ migrate = Migrate()
 login_manager = LoginManager()
 bootstrap = Bootstrap4()
 
-def create_app(config_name):
+def create_app():
     app = Flask(__name__)
-    app.config.from_object(config[config_name])
+    app.config.from_object(config[os.getenv('APP_ENV')])
     celery.conf.update(
         imports = app.config['CELERY_IMPORTS'],
         enable_utc = app.config['CELERY_ENABLE_UTC'],
@@ -43,11 +43,6 @@ def create_app(config_name):
 
     from .main import main as main_bp
     app.register_blueprint(main_bp)
-
-    @app.cli.command("delete_versions")
-    def delete_versions():
-        db.session.execute(' DELETE FROM "alembic_version" ')
-        db.session.commit()
     
     return app
 
