@@ -4,12 +4,12 @@ import datetime
 from app import create_app, db
 from app.models import User, Reminder
 
-EMAIL = 'alejoparinelli@gmail.com'
+EMAIL = 'someemail@gmail.com'
 USER = {
     'email': EMAIL,
-    'username': 'zephord',
-    'password': 'hello',
-    'password2': 'hello',
+    'username': 'username',
+    'password': 'password',
+    'password2': 'password',
     'timezone': pytz.timezone('America/Argentina/Buenos_Aires')
 }
 
