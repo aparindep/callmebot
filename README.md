@@ -12,7 +12,6 @@ git clone git@github.com:aparinelli/callmebot.git
 2. Go into the repo directory and create an environment file named `.env`:
 
 ```
-
 DATABASE_URL='postgresql://callmebot:callmebot@db:5432/callmebot_dev'
 TEST_DATABASE_URL='postgresql://callmebot:callmebot@db:5432/callmebot_test'
 SECRET_KEY='yoursecretkey'
