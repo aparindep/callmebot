@@ -3,7 +3,7 @@ from flask import redirect,render_template, flash
 from flask_login import login_user, current_user, login_required, logout_user
 
 from . import bp
-from .forms import RegistrationForm, LoginForm
+from .forms import RegistrationForm, LoginForm, UpdatePasswordForm
 from .. import db, login_manager
 from ..models import User
 from ..email import send_email
@@ -85,11 +85,23 @@ def edit():
         db.session.execute(stmt)
         db.session.commit()
 
-        flash('Sucessfuly edited your profile.')
+        flash('Sucessfully edited your profile.')
         return redirect('/')
     
     return render_template('auth/edit.html', form = form)
         
+@login_required
+@bp.route('/edit/update_password', methods=['GET', 'POST'])
+def update_password():
+    form = UpdatePasswordForm()
+    if form.validate_on_submit():
+        if current_user.check_password(form.old_password.data):
+            current_user.set_password(form.new_password.data)
+        else:
+            flash('Your current password is wrong.')
+        flash('Succesfully updated your password.')
+        return redirect('/')
+    return render_template('auth/update_password.html', form=form)
 
 @login_required
 @bp.route('/logout')
