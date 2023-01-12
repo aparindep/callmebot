@@ -26,8 +26,8 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
-      - POSTGRES_USER=callmebot
-      - POSTGRES_PASSWORD=callmebot
+      - POSTGRES_USER=${POSTGRES_USER?err}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?err}
     ports:
       - "5432:5432"
     expose:

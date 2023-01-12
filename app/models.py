@@ -1,10 +1,10 @@
-from flask import render_template, current_app
-from datetime import  datetime
+from flask import current_app
 from flask_login import UserMixin
-from . import db
-from . import login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+import logging
+from . import login_manager
+from . import db
 
 
 class Reminder(db.Model):
@@ -33,7 +33,6 @@ class User(db.Model, UserMixin):
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
-
     def check_password(self, password):
         if check_password_hash(self.password_hash, password):
             return True
@@ -56,4 +55,18 @@ class User(db.Model, UserMixin):
         db.session.merge(self)
         db.session.commit()
         return True
+    
+    def generate_password_reset_token(self, expiration=600):
+        s = Serializer(current_app.config['SECRET_KEY'], expires_in=expiration)
+        return s.dumps({'reset_password': self.id})
+
+    @staticmethod
+    def verify_reset_password_token(token):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            id = s.loads(token)['reset_password']
+        except:
+            return
         
+        return User.query.get(id)
+    

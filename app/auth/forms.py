@@ -37,3 +37,13 @@ class UpdatePasswordForm(FlaskForm):
     def validate_new_password(form, field):
         if form.old_password.data == field.data:
             raise ValidationError('Your new password must be different from your current password.')
+
+class ResetPasswordRequestForm(FlaskForm):
+    email = StringField('Email', validators = [DataRequired(), Email()])
+    submit = SubmitField('Submit')
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('Password', validators=[DataRequired(), EqualTo('password2', message='Passwords must match.')])
+    password2 = PasswordField('Confirm password', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
