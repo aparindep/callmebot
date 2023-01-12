@@ -21,7 +21,7 @@ class ReminderForm(FlaskForm):
     content = TextAreaField(label='Content', description='What should be the mail content?', validators=[Optional(), Length(1,700, 'Content must have between 1 and 200 characters.')])
     days = SelectMultipleField(label='Days', description='What days of the week should I email you?', validators=[Optional()], choices = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], render_kw = {'class': 'days-select'},  default = None)
     date = DateField(label='Date', description='When should I email you?', validators=[Optional()], default = None)
-    time = TimeField(label='Time', description='What time should I email you?', validators=[DataRequired('A time is required.')], default=datetime.time(0,0))
+    time = TimeField(label='Time', description='What time should I email you? Use 24-hour clock notation, e.g. 08:15 or 23:45).', validators=[DataRequired('A time is required.')], default=datetime.time(0,0))
     submit = SubmitField('Submit')
 
 def confirm_required(f):
@@ -37,9 +37,9 @@ def index():
     if current_user.is_authenticated:
         if current_user.confirmed:
             reminders = Reminder.query.filter_by(author_id = current_user.id).all()
-            return render_template('home.html', reminders = reminders)
+            return render_template('main/home.html', reminders = reminders)
         else:
-            return render_template('confirm.html')
+            return render_template('main/confirm_required.html')
     else:
         return redirect('/auth/register')
 
@@ -90,7 +90,7 @@ def new(reminder_type):
                 eta = user_tz.localize(datetime.datetime.combine(r.date, r.time))
             )
         return redirect('/')
-    return render_template('new.html', form=form, reminder_type=reminder_type)
+    return render_template('main/new.html', form=form, reminder_type=reminder_type)
 
 @main.route('/edit/<reminder_id>', methods=['GET', 'POST'])
 @login_required
@@ -120,7 +120,7 @@ def edit(reminder_id):
         db.session.commit()
 
         return redirect('/')
-    return render_template('edit_reminder.html', form=form)
+    return render_template('main/edit_reminder.html', form=form)
 
 @main.route('/delete/<reminder_id>', methods=['POST'])
 @login_required

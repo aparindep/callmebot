@@ -30,6 +30,7 @@
                             {{ current_user.username }}
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown" style="color: black !important;">
+                            <a class="dropdown-item" href="{{ url_for('auth.edit') }}">Edit my profile</a>
                             <a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a>
                         </div>
                     </li>
@@ -45,9 +46,6 @@
             </div>
         </nav>
         <div class="main">
-            {% block content %}
-            
-            {% endblock %}
             {% with messages=get_flashed_messages() %}
                 {% if messages %}
                 {% for message in messages %}
@@ -58,6 +56,10 @@
                 {% endfor %}
                 {% endif %}
             {% endwith %}
+            {% block content %}
+            
+            {% endblock %}
+            
         </div>
 
         {% block scripts %}
