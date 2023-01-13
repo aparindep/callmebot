@@ -42,10 +42,8 @@ set_key(
     "TEST_DATABASE_URL",
     f"postgresql://{s['username']}:{s['password']}@{s['host']}:{s['port']}/{s['dbname'].replace('dev', 'test')}"
 )
-
-os.environ['POSTGRES_USER'] = s['username']
-os.environ['POSTGRES_PASSWORD'] = s['password']
-
+set_key(dotenv_file, "POSTGRES_USER", s['username'])
+set_key(dotenv_file, "POSTGRES_PASSWORD", s['password'])
 
 s = get_secret("callmebot/secret_key")
 set_key(dotenv_file, "SECRET_KEY", s['secret_key'])
