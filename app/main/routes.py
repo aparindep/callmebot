@@ -1,28 +1,16 @@
 import datetime
 import pytz
 from functools import partial, wraps
-
-from flask import redirect,render_template
+from flask import redirect, render_template
+from flask_login import login_required, current_user
 from sqlalchemy import update
 from celery import schedules
-from flask_login import login_required, current_user
-from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, TextAreaField, DateField, TimeField, SelectMultipleField
-from wtforms.validators import DataRequired, Length, Optional
 from redbeat import RedBeatSchedulerEntry
-
 from . import main
-from .. import db, celery
+from forms import ReminderForm
+from app import db, celery
 from app.email import send_email
-from ..models import Reminder
-    
-class ReminderForm(FlaskForm):
-    subject = StringField(label='Subject', description='What should be the mail subject?', validators=[Optional(), Length(1,50, 'Subject must have between 5 and 50 characters.')] )
-    content = TextAreaField(label='Content', description='What should be the mail content?', validators=[Optional(), Length(1,700, 'Content must have between 1 and 200 characters.')])
-    days = SelectMultipleField(label='Days', description='What days of the week should I email you?', validators=[Optional()], choices = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], render_kw = {'class': 'days-select'},  default = None)
-    date = DateField(label='Date', description='When should I email you?', validators=[Optional()], default = None)
-    time = TimeField(label='Time', description='What time should I email you? Use 24-hour clock notation, e.g. 08:15 or 23:45).', validators=[DataRequired('A time is required.')], default=datetime.time(0,0))
-    submit = SubmitField('Submit')
+from app.models import Reminder
 
 def confirm_required(f):
     @wraps(f)
@@ -32,12 +20,15 @@ def confirm_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-@main.route('/')
-def index():
+@main.route('/', defaults={'page': None})
+@main.route('/<int:page>', methods = ['GET'])
+def index(page=1):
     if current_user.is_authenticated:
         if current_user.confirmed:
-            reminders = Reminder.query.filter_by(author_id = current_user.id).all()
-            return render_template('main/home.html', reminders = reminders)
+            per_page = 5
+            query = Reminder.query.filter_by(author_id = current_user.id).order_by(Reminder.id.desc())
+            reminders = query.paginate(page, per_page, error_out=False)
+            return render_template('main/home.html', reminders=reminders)
         else:
             return render_template('main/confirm_required.html')
     else:

@@ -3,7 +3,7 @@ from flask import redirect,render_template, flash
 from flask_login import login_user, current_user, login_required, logout_user
 
 from . import bp
-from .forms import RegistrationForm, LoginForm, UpdatePasswordForm, ResetPasswordRequestForm, ResetPasswordForm
+from forms import RegistrationForm, LoginForm, UpdatePasswordForm, ResetPasswordRequestForm, ResetPasswordForm
 from .. import db, login_manager
 from ..models import User
 from ..email import send_email, send_password_reset_email

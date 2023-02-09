@@ -11,4 +11,4 @@ else
     python3 -m flask db upgrade
 fi
 
-gunicorn --bind 0.0.0.0:5000 'app:create_app()'
+gunicorn --bind 0.0.0.0:5000 'app:create_app()' --log-level DEBUG

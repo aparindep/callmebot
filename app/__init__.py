@@ -1,14 +1,15 @@
 import os
+import logging
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_bootstrap import Bootstrap4
 from flask_mail import Mail
-from config import config
 from celery import Celery
 from redbeat import schedulers
 from custom_enc_dec import CustomJSONDecoder, CustomJSONEncoder
+from config import config
 
 celery = Celery(__name__)
 mail = Mail()
@@ -29,6 +30,10 @@ def create_app():
         )
     schedulers.RedBeatJSONDecoder = CustomJSONDecoder
     schedulers.RedBeatJSONEncoder = CustomJSONEncoder
+
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
 
     from . import models
 
