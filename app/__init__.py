@@ -43,7 +43,7 @@ def create_app():
     login_manager.init_app(app)
     bootstrap.init_app(app)
 
-    from .auth import bp as auth_bp
+    from .auth import auth as auth_bp
     app.register_blueprint(auth_bp)
 
     from .main import main as main_bp

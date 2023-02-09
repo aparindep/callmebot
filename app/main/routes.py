@@ -7,10 +7,10 @@ from sqlalchemy import update
 from celery import schedules
 from redbeat import RedBeatSchedulerEntry
 from . import main
-from forms import ReminderForm
 from app import db, celery
-from app.email import send_email
 from app.models import Reminder
+from app.email import send_email
+from app.main.forms import ReminderForm
 
 def confirm_required(f):
     @wraps(f)
@@ -32,7 +32,7 @@ def index(page=1):
         else:
             return render_template('main/confirm_required.html')
     else:
-        return redirect('/auth/register')
+        return render_template('misc/welcome.html')
 
 @main.route('/new/<reminder_type>', methods = ['GET', 'POST'])
 @login_required

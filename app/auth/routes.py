@@ -2,17 +2,17 @@ from sqlalchemy import update
 from flask import redirect,render_template, flash
 from flask_login import login_user, current_user, login_required, logout_user
 
-from . import bp
-from forms import RegistrationForm, LoginForm, UpdatePasswordForm, ResetPasswordRequestForm, ResetPasswordForm
-from .. import db, login_manager
-from ..models import User
-from ..email import send_email, send_password_reset_email
+from . import auth
+from app import db, login_manager
+from app.models import User
+from app.email import send_email, send_password_reset_email
+from app.auth.forms import RegistrationForm, LoginForm, UpdatePasswordForm, ResetPasswordRequestForm, ResetPasswordForm
 
 @login_manager.unauthorized_handler
 def unauthorized_rollback():
     return redirect('/auth/register')
 
-@bp.route('/login', methods=['GET', 'POST'])
+@auth.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
@@ -24,7 +24,7 @@ def login():
             flash('Your email or password is wrong.')
     return render_template('auth/login.html', form=form)
 
-@bp.route('/register', methods=['GET', 'POST'])
+@auth.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -40,7 +40,7 @@ def register():
         return redirect('/')
     return render_template('auth/register.html', form=form)
 
-@bp.route('/confirm/<token>')
+@auth.route('/confirm/<token>')
 @login_required
 def confirm(token):
     current_user.confirm(token)
@@ -51,7 +51,7 @@ def confirm(token):
         flash('The confirmation token is invalid or has expired.')
         return render_template('auth/expired.html'), 401
 
-@bp.route('/confirm')
+@auth.route('/confirm')
 @login_required
 def resend_confirmation():
     token = current_user.generate_confirmation_token()
@@ -59,7 +59,7 @@ def resend_confirmation():
     flash('I have sent you a confirmation email.')
     return redirect('/')
 
-@bp.route('/edit', methods = ['GET', 'POST'])
+@auth.route('/edit', methods = ['GET', 'POST'])
 @login_required
 def edit():
     form = RegistrationForm(
@@ -91,7 +91,7 @@ def edit():
     return render_template('auth/edit.html', form = form)
         
 @login_required
-@bp.route('/edit/update_password', methods=['GET', 'POST'])
+@auth.route('/edit/update_password', methods=['GET', 'POST'])
 def update_password():
     form = UpdatePasswordForm()
     if form.validate_on_submit():
@@ -104,7 +104,7 @@ def update_password():
         return redirect('/')
     return render_template('auth/update_password.html', form=form)
 
-@bp.route('/request_password_reset', methods=['GET', 'POST'])
+@auth.route('/request_password_reset', methods=['GET', 'POST'])
 def request_password_reset():
     form = ResetPasswordRequestForm()
     if form.validate_on_submit():
@@ -115,7 +115,7 @@ def request_password_reset():
            return redirect('/auth/login')
     return render_template('auth/req_password_reset.html', form=form)
 
-@bp.route('/reset_password/<token>', methods = ['GET', 'POST'])
+@auth.route('/reset_password/<token>', methods = ['GET', 'POST'])
 def reset_password(token):
     if current_user.is_authenticated:
         return redirect('/')
@@ -131,7 +131,7 @@ def reset_password(token):
     return render_template('auth/reset_password.html', form=form)
 
 @login_required
-@bp.route('/logout')
+@auth.route('/logout')
 def logout():
     logout_user()
     return redirect('/')
