@@ -1,6 +1,7 @@
 body {
     background-color: #cef0f1;}
 footer {
+    font-size: smaller;
     padding: 2%;
     text-align: right;
 }

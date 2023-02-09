@@ -9,7 +9,7 @@
       </div> 
     </div>
     <ul class="list-group list-group-flush">
-      <li class="list-group-item">{{ reminder.content }}</li>
+      <li class="list-group-item"><pre>{{ reminder.content }}</pre></li>
       
       {% if reminder.date %}
       <li class="list-group-item">{{ reminder.date.strftime("%A %d. %B %Y") }}</li>

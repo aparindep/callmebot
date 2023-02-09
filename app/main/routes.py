@@ -1,6 +1,7 @@
 import datetime
 import pytz
 from functools import partial, wraps
+from markupsafe import escape
 from flask import redirect, render_template
 from flask_login import login_required, current_user
 from sqlalchemy import update
@@ -56,7 +57,8 @@ def new(reminder_type):
         db.session.commit()
 
         user_tz = pytz.timezone(current_user.timezone)
-        
+        html_content = render_template('email/reminder.html', content=r.content)
+
         if reminder_type == 'periodic':
             interval = schedules.crontab(
                 minute = data['time'].minute,
@@ -68,14 +70,14 @@ def new(reminder_type):
                 name = str(r.id),
                 task = 'app.email.send_email',
                 schedule = interval,
-                args = (current_user.email, r.subject, r.content),
+                args = (current_user.email, r.subject, html_content),
                 app = celery
             )
             entry.save()
         elif reminder_type == 'deadline':
             send_email.apply_async(
                 task_id = str(r.id),
-                args = (current_user.email, r.subject, r.content),
+                args = (current_user.email, r.subject, html_content),
                 eta = user_tz.localize(datetime.datetime.combine(r.date, r.time))
             )
         return redirect('/')
@@ -131,6 +133,12 @@ def delete(reminder_id):
 @main.route('/about')
 def about():
     return render_template('misc/about.html')
+
+def split_paragraphs(s: str) -> list:
+    if '\r' in s:
+        return s.split('\r')
+    elif '\n' in s:
+        return s.split('\n')
 
 def list_to_string(li: list) -> str:
     """
