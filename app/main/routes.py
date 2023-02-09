@@ -69,7 +69,6 @@ def new(reminder_type):
                 task = 'app.email.send_email',
                 schedule = interval,
                 args = (current_user.email, r.subject, r.content),
-                kwargs = ({'reminder_id': r.id}),
                 app = celery
             )
             entry.save()
@@ -77,7 +76,6 @@ def new(reminder_type):
             send_email.apply_async(
                 task_id = str(r.id),
                 args = (current_user.email, r.subject, r.content),
-                kwargs = ({'reminder_id': r.id}),
                 eta = user_tz.localize(datetime.datetime.combine(r.date, r.time))
             )
         return redirect('/')
@@ -129,6 +127,10 @@ def delete(reminder_id):
     db.session.commit()
     
     return redirect('/')
+
+@main.route('/about')
+def about():
+    return render_template('misc/about.html')
 
 def list_to_string(li: list) -> str:
     """

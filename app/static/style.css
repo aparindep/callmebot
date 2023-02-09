@@ -1,5 +1,9 @@
 body {
     background-color: #cef0f1;}
+footer {
+    padding: 2%;
+    text-align: right;
+}
 .main {
     padding: 2%;
     font-size:larger;
